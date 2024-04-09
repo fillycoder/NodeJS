@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="app.css"><!-- css file -->
+  <link rel="stylesheet"
+  href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css">
+  <title>html form</title>
+</head>
+<body>
+
+<div class="subscribe-container">
+
+  <div id="myDiv"></div><!-- div for the table -->
+
+  <!-- Our form -->
+  <form method="POST" id="myForm">
+    <input type="text" id="topic" name="topic" placeholder="topic" required>
+    <input type="text" name="data" id="data" placeholder="data" required>
+    <input class="subscribe-button" type="submit" value="Send">
+  </form>
+</div>
+</body>
+<script>
+  //Run the script one the window loads
+  window.addEventListener( "load", function () {
+
+    //Declare our div ID
+    var myDiv = document.getElementById('myDiv');
+
+    //Function to get the data
+    const getData = () => {
+
+      //Create a new instance of XMLHttpRequest as request
+      let request = new XMLHttpRequest();
+
+      //Access the URL
+      request.open('GET', '/get');
+      request.responseType = 'text';
+
+      //On success load returned data to the div
+      request.onload = function() {
+        console.log(request.response);
+        myDiv.innerHTML = request.response;
+      };
+
+      //Send the request to back end
+      request.send();
+    };
+    getData();//Calling the fetch data function once the page load
+
+    //Sending data function
+    function sendData() {
+
+      //prepare our form data into new js object as params
+      var params = new Object();
+      params.topic = document.getElementById('topic').value;
+      params.data = document.getElementById('data').value;
+
+      //Create a new instance of XMLHttpRequest
+      var xhr = new XMLHttpRequest()
+        xhr.open('POST', '/send', true)
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+
+        //On success call the fetch data function to get the latest data
+        xhr.onload = function() {
+        getData();
+      };
+        xhr.send(JSON.stringify(params))
+    }
+
+    //An event listener to detect form submission
+    const form = document.getElementById( "myForm" );
+    form.addEventListener( "submit", function ( event ) {
+
+      //If submitted prevent the normal form reload manner
+      event.preventDefault();
+      //Call the send data function to send it using XMLHttpRequest and no reload
+      sendData();
+    } );
+  });
+</script>
+</html>

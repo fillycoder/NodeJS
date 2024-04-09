@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="app.css"><!-- css file -->
+  <link rel="stylesheet"
+  href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css">
+  <title>html form</title>
+</head>
+<body>
+<div>
+
+  <a href="/order">orders</a>
+  <br>
+  <a href="create">create new</a>
+  <br>
+  <a href="/">homes</a>
+    <br>
+  <a href="">logout</a>
+
+</div>
+<div class="subscribe-container">
+
+  <div id="myDiv"></div><!-- div for the table -->
+
+  <!-- Our form -->
+  <form method="POST" id="myForm">
+    <input type="text" id="username" name="username" placeholder="username" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <input class="subscribe-button" id="hid" type="hidden" value="">
+    <input class="subscribe-button" type="submit" value="Subscribe">
+  </form>
+</div>
+</body>
+<script>
+  //Run the script one the window loads
+  window.addEventListener( "load", function () {
+
+    //Declare our div ID
+    var myDiv = document.getElementById('myDiv');
+
+    //Function to get the data
+    const getData = () => {
+
+      //Create a new instance of XMLHttpRequest as request
+      let request = new XMLHttpRequest();
+
+      //Access the URL
+      request.open('GET', '/home');
+      request.responseType = 'text';
+
+      //On success load returned data to the div
+      request.onload = function() {
+        console.log(request.response);
+        myDiv.innerHTML = request.response;
+      };
+
+      //Send the request to back end
+      request.send();
+    };
+    getData();//Calling the fetch data function once the page load
+
+    //Sending edit form
+    function sendData() {
+
+      //prepare our form data into new js object as params
+      var params = new Object();
+      params.name = document.getElementById('name').value;
+      params.password = document.getElementById('password').value;
+      params.id = document.getElementById('hid').value;
+      params.edit_type = 1;
+
+      //Create a new instance of XMLHttpRequest
+      var xhr = new window.XMLHttpRequest()
+        xhr.open('POST', '/edit', true)
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+
+        //On success
+        xhr.onload = function() {
+        getData();
+      };
+        xhr.send(JSON.stringify(params))
+    }
+
+    //An event listener to detect form submission
+    const form = document.getElementById( "myForm" );
+    form.addEventListener( "submit", function ( event ) {
+
+      //If submitted prevent the normal form reload manner
+      event.preventDefault();
+      //Call the send data function to send it using XMLHttpRequest and no reload
+      sendData();
+    } );
+
+    //delete user
+    sendData2 = function(id) {
+
+      // alert(id)
+      //prepare our form data into new js object as params
+      var params = new Object();
+      params.id = id;
+      params.edit_type = 2;
+
+      //Create a new instance of XMLHttpRequest
+      var xhr = new window.XMLHttpRequest()
+        xhr.open('POST', '/edit', true)
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+
+        //On success call the fetch data function to get the latest data
+        xhr.onload = function() {
+        getData();
+      };
+      xhr.send(JSON.stringify(params))
+    }
+
+    //add user to awaiting order table
+    sendData3 = function(id) {
+
+      // alert(id)
+      //prepare our form data into new js object as params
+      var params = new Object();
+      params.id = id;
+      params.given_type = 3;
+
+      //Create a new instance of XMLHttpRequest
+      var xhr = new window.XMLHttpRequest()
+        xhr.open('POST', '/given', true)
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+
+        //On success
+        xhr.onload = function() {
+        alert('Done');
+      };
+      xhr.send(JSON.stringify(params))
+    }
+
+    //populate the edit form
+    setData = function(uid){
+
+      // alert(uid)
+      var user = uid.split('-');
+      var name = user[2];
+      var email = user[1];
+      var id = user[0];
+
+      // alert(name+' '+email+' '+id)
+      document.getElementById('name').value = name;
+      document.getElementById('email').value = email;
+      document.getElementById('hid').value = id;
+
+    }
+
+
+  });
+</script>
+</html>
