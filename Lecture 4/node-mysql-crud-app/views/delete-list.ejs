@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Users</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Delete Users</h2>
+        <% if (users.length > 0) { %>
+            <ul class="list-group">
+                <% users.forEach(user => { %>
+                    <li class="list-group-item">
+                        <%= user.name %> (Age: <%= user.age %>)
+                        <a href="/users/delete/<%= user.id %>" class="btn btn-danger btn-sm">Delete</a>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No users found.</p>
+        <% } %>
+    </div>
+</body>
+</html>
